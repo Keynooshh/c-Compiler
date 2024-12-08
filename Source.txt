@@ -1,0 +1,6 @@
+a = input
+i = 0
+:label
+output o 
+k = i + 1 * 7 - ( 9 / 3)
+if i < n then goto :label
