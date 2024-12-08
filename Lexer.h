@@ -18,7 +18,6 @@ enum token_kind {
     TK_GTHAN,
     TK_LPAREN,
     TK_RPAREN,
-    TK_PRINT,
     INVALID,
     END
 };
@@ -47,7 +46,7 @@ const char * show_token_kind(enum token_kind kind) {
         case TK_GTHAN:     return ">";
         case TK_LPAREN:    return "(";
         case TK_RPAREN:    return ")";
-        case TK_PRINT:     return "print";
+
         case INVALID:      return "invalid"; 
         case END:          return "end";
     }
@@ -159,9 +158,7 @@ static struct token lexer_next_token(struct lexer*l){
             return (struct token){.kind = TK_GOTO, .value = NULL};
         } else if (strcmp(value, "label") == 0) {
             return (struct token){.kind = TK_LABLE, .value = NULL};
-        } else if (strcmp(value, "print") == 0) {
-            return (struct token){.kind = TK_PRINT, .value = NULL};
-        }else{
+        } else{
             return (struct token){.kind = TK_IDENT, .value = value};
         }
 

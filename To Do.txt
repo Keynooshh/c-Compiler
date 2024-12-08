@@ -2,7 +2,7 @@ Amir must install nasm and ld(linker)
 
 term = <input> | variable | literal
 expression = term | term + term | term - term | term * term | term / term | term % term
-rel = term < term | term > term | term <= term | term >= term | term == term | term != term
+rel = term < term | term > term 
 assing = variable = expression
 instr = assing | <if> rel <then> instr | <goto> : label | <output> term | :lable
 
