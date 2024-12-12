@@ -1,6 +1,6 @@
 #define LEXER
-#include "lexer.h"
-#include "ds.h"
+#include "../include/lexer.h"
+#include "../include/ds.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>

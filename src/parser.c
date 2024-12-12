@@ -1,6 +1,6 @@
-#include "lexer.h"
-#include "parser.h"
-#include "ds.h"
+#include "../include/lexer.h"
+#include "../include/parser.h"
+#include "../include/ds.h"
 #define PARSER
 
 

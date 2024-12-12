@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #define DS_IMPLEMENTATION
-#include "ds.h"
+#include "../include/ds.h"
 #include <string.h>
 
 enum token_kind {

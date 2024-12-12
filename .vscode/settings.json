@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "*.copy": "cpp"
+        "*.copy": "cpp",
+        "string.h": "c",
+        "ctype.h": "c",
+        "stdio.h": "c"
     }
 }

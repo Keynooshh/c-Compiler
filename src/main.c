@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "parser.h"
-#include "ds.h"
+#include "../include/parser.h"
+#include "../include/ds.h"
 
 int main(){
     char *buffer = NULL;
