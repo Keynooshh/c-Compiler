@@ -1,6 +1,10 @@
 a = input
 i = 0
 :label
+o = 1
 output o 
-k = i + 1 * 7 - ( 9 / 3)
-if i < n then goto :label
+k = i + 1  
+k = k * 2
+l = 2 / 3
+d = 4 - 2
+if i < 2 then goto :label

@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#define DS_IMPLEMENTATION
+#include "parser.h"
 #include "ds.h"
-#include "Lexer.h"
 
 int main(){
     char *buffer = NULL;
@@ -14,11 +13,8 @@ int main(){
 
     lexer_tokenize(buffer, length , &tokens );
 
-    for(unsigned int  i=0; i < tokens.count; i++){
-        struct token tok;
-        ds_dynamic_array_get(&tokens, i, &tok);
-        print_token(tok);
-    }
-
-    printf("%s\n",buffer);
+    struct parser p;
+    struct program_node program;
+    parser_init(tokens,&p);
+    parse_program(&p,&program);
 }
