@@ -142,12 +142,12 @@ void parse_assign(struct parser* p, struct instr_node * instr){
         DS_PANIC("Expected Equal found %s",show_token_kind(token.kind));
     }
     parser_advance(p);
-    parse_expr(p,&instr-> assign.expr);
+    parse_expr(p,instr-> assign.expr);
 }
 
 
 void parse_if(struct parser* p, struct instr_node * instr){
-
+    
 }
 
 void parse_goto(struct parser* p, struct instr_node * instr){
