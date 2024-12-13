@@ -1,0 +1,26 @@
+fib_seq = 4
+last = fib_seq -1
+output last
+i = 0
+j = 1
+n = 2
+
+d = 2 -2
+output d
+output ,
+
+output i
+output ,
+output j
+output ,
+:loop
+k = i + j
+output k
+i = j
+j = k
+if n < last then goto :end
+output ,
+n = n + 1
+
+if n < fib_seq then goto :loop
+:end

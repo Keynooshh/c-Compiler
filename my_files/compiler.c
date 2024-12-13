@@ -4,7 +4,8 @@
 #include "../include/ds.h"
 #include <string.h>
 
-enum token_kind {
+enum token_kind
+{
     IDENT,
     LABEL,
     INT,
@@ -20,13 +21,16 @@ enum token_kind {
     END
 };
 
-struct token {
-        enum token_kind kind;
-        char *value;
+struct token
+{
+    enum token_kind kind;
+    char *value;
 };
 
-const char *show_token_kind(enum token_kind kind) {
-    switch (kind) {
+const char *show_token_kind(enum token_kind kind)
+{
+    switch (kind)
+    {
     case IDENT:
         return "ident";
     case LABEL:
@@ -56,32 +60,38 @@ const char *show_token_kind(enum token_kind kind) {
     }
 }
 
-void print_token(struct token tok) {
+void print_token(struct token tok)
+{
     const char *kind = show_token_kind(tok.kind);
     printf("%s", kind);
-    if (tok.value != NULL) {
+    if (tok.value != NULL)
+    {
         printf("(%s)", tok.value);
     }
     printf("\n");
 }
 
-struct lexer {
-        char *buffer;
-        unsigned int buffer_len;
-        unsigned int pos;
-        unsigned int read_pos;
-        char ch;
+struct lexer
+{
+    char *buffer;
+    unsigned int buffer_len;
+    unsigned int pos;
+    unsigned int read_pos;
+    char ch;
 };
 
-static char lexer_peek_char(struct lexer *l) {
-    if (l->read_pos >= l->buffer_len) {
+static char lexer_peek_char(struct lexer *l)
+{
+    if (l->read_pos >= l->buffer_len)
+    {
         return EOF;
     }
 
     return l->buffer[l->read_pos];
 }
 
-static char lexer_read_char(struct lexer *l) {
+static char lexer_read_char(struct lexer *l)
+{
     l->ch = lexer_peek_char(l);
 
     l->pos = l->read_pos;
@@ -90,13 +100,16 @@ static char lexer_read_char(struct lexer *l) {
     return l->ch;
 }
 
-static void skip_whitespaces(struct lexer *l) {
-    while (isspace(l->ch)) {
+static void skip_whitespaces(struct lexer *l)
+{
+    while (isspace(l->ch))
+    {
         lexer_read_char(l);
     }
 }
 
-static void lexer_init(struct lexer *l, char *buffer, unsigned int buffer_len) {
+static void lexer_init(struct lexer *l, char *buffer, unsigned int buffer_len)
+{
     l->buffer = buffer;
     l->buffer_len = buffer_len;
     l->pos = 0;
@@ -106,62 +119,92 @@ static void lexer_init(struct lexer *l, char *buffer, unsigned int buffer_len) {
     lexer_read_char(l);
 }
 
-static struct token lexer_next_token(struct lexer *l) {
+static struct token lexer_next_token(struct lexer *l)
+{
     skip_whitespaces(l);
 
-    if (l->ch == EOF) {
+    if (l->ch == EOF)
+    {
         lexer_read_char(l);
         return (struct token){.kind = END, .value = NULL};
-    } else if (l->ch == '=') {
+    }
+    else if (l->ch == '=')
+    {
         lexer_read_char(l);
         return (struct token){.kind = EQUAL, .value = NULL};
-    } else if (l->ch == '+') {
+    }
+    else if (l->ch == '+')
+    {
         lexer_read_char(l);
         return (struct token){.kind = PLUS, .value = NULL};
-    } else if (l->ch == '<') {
+    }
+    else if (l->ch == '<')
+    {
         lexer_read_char(l);
         return (struct token){.kind = LESS_THAN, .value = NULL};
-    } else if (l->ch == ':') {
+    }
+    else if (l->ch == ':')
+    {
         lexer_read_char(l);
         ds_string_slice slice = {.str = l->buffer + l->pos, .len = 0};
-        while (isalnum(l->ch) || l->ch == '_') {
+        while (isalnum(l->ch) || l->ch == '_')
+        {
             slice.len += 1;
             lexer_read_char(l);
         }
         char *value = NULL;
         ds_string_slice_to_owned(&slice, &value);
         return (struct token){.kind = LABEL, .value = value};
-    } else if (isdigit(l->ch)) {
+    }
+    else if (isdigit(l->ch))
+    {
         ds_string_slice slice = {.str = l->buffer + l->pos, .len = 0};
-        while (isdigit(l->ch)) {
+        while (isdigit(l->ch))
+        {
             slice.len += 1;
             lexer_read_char(l);
         }
         char *value = NULL;
         ds_string_slice_to_owned(&slice, &value);
         return (struct token){.kind = INT, .value = value};
-    } else if (isalnum(l->ch) || l->ch == '_') {
+    }
+    else if (isalnum(l->ch) || l->ch == '_')
+    {
         ds_string_slice slice = {.str = l->buffer + l->pos, .len = 0};
-        while (isalnum(l->ch) || l->ch == '_') {
+        while (isalnum(l->ch) || l->ch == '_')
+        {
             slice.len += 1;
             lexer_read_char(l);
         }
         char *value = NULL;
         ds_string_slice_to_owned(&slice, &value);
-        if (strcmp(value, "input") == 0) {
+        if (strcmp(value, "input") == 0)
+        {
             return (struct token){.kind = INPUT, .value = NULL};
-        } else if (strcmp(value, "output") == 0) {
+        }
+        else if (strcmp(value, "output") == 0)
+        {
             return (struct token){.kind = OUTPUT, .value = NULL};
-        } else if (strcmp(value, "goto") == 0) {
+        }
+        else if (strcmp(value, "goto") == 0)
+        {
             return (struct token){.kind = GOTO, .value = NULL};
-        } else if (strcmp(value, "if") == 0) {
+        }
+        else if (strcmp(value, "if") == 0)
+        {
             return (struct token){.kind = IF, .value = NULL};
-        } else if (strcmp(value, "then") == 0) {
+        }
+        else if (strcmp(value, "then") == 0)
+        {
             return (struct token){.kind = THEN, .value = NULL};
-        } else {
+        }
+        else
+        {
             return (struct token){.kind = IDENT, .value = value};
         }
-    } else {
+    }
+    else
+    {
         ds_string_slice slice = {.str = l->buffer + l->pos, .len = 1};
         char *value = NULL;
         ds_string_slice_to_owned(&slice, &value);
@@ -171,14 +214,17 @@ static struct token lexer_next_token(struct lexer *l) {
 }
 
 int lexer_tokenize(char *buffer, unsigned int length,
-                   ds_dynamic_array *tokens) {
+                   ds_dynamic_array *tokens)
+{
     struct lexer lexer;
     lexer_init(&lexer, (char *)buffer, length);
 
     struct token tok;
-    do {
+    do
+    {
         tok = lexer_next_token(&lexer);
-        if (ds_dynamic_array_append(tokens, &tok) != 0) {
+        if (ds_dynamic_array_append(tokens, &tok) != 0)
+        {
             DS_PANIC("Failed to append token to array");
         }
     } while (tok.kind != END);
@@ -186,45 +232,60 @@ int lexer_tokenize(char *buffer, unsigned int length,
     return 0;
 }
 
-enum term_kind { TERM_INPUT, TERM_INT, TERM_IDENT };
-
-struct term_node {
-        enum term_kind kind;
-        union {
-                char *value;
-        };
+enum term_kind
+{
+    TERM_INPUT,
+    TERM_INT,
+    TERM_IDENT
 };
 
-enum expr_kind {
+struct term_node
+{
+    enum term_kind kind;
+    union
+    {
+        char *value;
+    };
+};
+
+enum expr_kind
+{
     EXPR_TERM,
     EXPR_PLUS,
 };
 
-struct term_binary_node {
-        struct term_node lhs;
-        struct term_node rhs;
+struct term_binary_node
+{
+    struct term_node lhs;
+    struct term_node rhs;
 };
 
-struct expr_node {
-        enum expr_kind kind;
-        union {
-                struct term_node term;
-                struct term_binary_node add;
-        };
+struct expr_node
+{
+    enum expr_kind kind;
+    union
+    {
+        struct term_node term;
+        struct term_binary_node add;
+    };
 };
 
-enum rel_kind {
+enum rel_kind
+{
     REL_LESS_THAN,
 };
 
-struct rel_node {
-        enum rel_kind kind;
-        union {
-                struct term_binary_node less_than;
-        };
+struct rel_node
+{
+    enum rel_kind kind;
+    union
+    {
+        struct term_binary_node less_than;
+    };
 };
 
-enum instr_kind {
+enum instr_kind
+{
     INSTR_ASSIGN,
     INSTR_IF,
     INSTR_GOTO,
@@ -232,72 +293,91 @@ enum instr_kind {
     INSTR_LABEL
 };
 
-struct assign_node {
-        char *ident;
-        struct expr_node expr;
+struct assign_node
+{
+    char *ident;
+    struct expr_node expr;
 };
 
-struct if_node {
-        struct rel_node rel;
-        struct instr_node *instr;
+struct if_node
+{
+    struct rel_node rel;
+    struct instr_node *instr;
 };
 
-struct goto_node {
-        char *label;
+struct goto_node
+{
+    char *label;
 };
 
-struct output_node {
-        struct term_node term;
+struct output_node
+{
+    struct term_node term;
 };
 
-struct label_node {
-        char *label;
+struct label_node
+{
+    char *label;
 };
 
-struct instr_node {
-        enum instr_kind kind;
-        union {
-                struct assign_node assign;
-                struct if_node if_;
-                struct goto_node goto_;
-                struct output_node output;
-                struct label_node label;
-        };
+struct instr_node
+{
+    enum instr_kind kind;
+    union
+    {
+        struct assign_node assign;
+        struct if_node if_;
+        struct goto_node goto_;
+        struct output_node output;
+        struct label_node label;
+    };
 };
 
-struct program_node {
-        ds_dynamic_array instrs;
+struct program_node
+{
+    ds_dynamic_array instrs;
 };
 
-struct parser {
-        ds_dynamic_array tokens;
-        unsigned int index;
+struct parser
+{
+    ds_dynamic_array tokens;
+    unsigned int index;
 };
 
-void parser_init(ds_dynamic_array tokens, struct parser *p) {
+void parser_init(ds_dynamic_array tokens, struct parser *p)
+{
     p->tokens = tokens;
     p->index = 0;
 }
 
-void parser_current(struct parser *p, struct token *token) {
+void parser_current(struct parser *p, struct token *token)
+{
     ds_dynamic_array_get(&p->tokens, p->index, token);
 }
 
 void parser_advance(struct parser *p) { p->index++; }
 
-void parse_term(struct parser *p, struct term_node *term) {
+void parse_term(struct parser *p, struct term_node *term)
+{
     struct token token;
 
     parser_current(p, &token);
-    if (token.kind == INPUT) {
+    if (token.kind == INPUT)
+    {
         term->kind = TERM_INPUT;
-    } else if (token.kind == INT) {
+    }
+    else if (token.kind == INT)
+    {
         term->kind = TERM_INT;
         term->value = token.value;
-    } else if (token.kind == IDENT) {
+    }
+    else if (token.kind == IDENT)
+    {
         term->kind = TERM_IDENT;
         term->value = token.value;
-    } else {
+    }
+    else
+    {
         DS_PANIC("Expected a term (input, int or ident) but found %s",
                  show_token_kind(token.kind));
     }
@@ -305,46 +385,55 @@ void parse_term(struct parser *p, struct term_node *term) {
     parser_advance(p);
 }
 
-void parse_expr(struct parser *p, struct expr_node *expr) {
+void parse_expr(struct parser *p, struct expr_node *expr)
+{
     struct token token;
     struct term_node lhs, rhs;
 
     parse_term(p, &lhs);
 
     parser_current(p, &token);
-    if (token.kind == PLUS) {
+    if (token.kind == PLUS)
+    {
         parser_advance(p);
         parse_term(p, &rhs);
 
         expr->kind = EXPR_PLUS;
         expr->add.lhs = lhs;
         expr->add.rhs = rhs;
-    } else {
+    }
+    else
+    {
         expr->kind = EXPR_TERM;
         expr->term = lhs;
     }
 }
 
-void parse_rel(struct parser *p, struct rel_node *rel) {
+void parse_rel(struct parser *p, struct rel_node *rel)
+{
     struct token token;
     struct term_node lhs, rhs;
 
     parse_term(p, &lhs);
 
     parser_current(p, &token);
-    if (token.kind == LESS_THAN) {
+    if (token.kind == LESS_THAN)
+    {
         parser_advance(p);
         parse_term(p, &rhs);
 
         rel->kind = REL_LESS_THAN;
         rel->less_than.lhs = lhs;
         rel->less_than.rhs = rhs;
-    } else {
+    }
+    else
+    {
         DS_PANIC("Expected rel (<) found %s", show_token_kind(token.kind));
     }
 }
 
-void parse_assign(struct parser *p, struct instr_node *instr) {
+void parse_assign(struct parser *p, struct instr_node *instr)
+{
     struct token token;
 
     instr->kind = INSTR_ASSIGN;
@@ -354,7 +443,8 @@ void parse_assign(struct parser *p, struct instr_node *instr) {
     parser_advance(p);
 
     parser_current(p, &token);
-    if (token.kind != EQUAL) {
+    if (token.kind != EQUAL)
+    {
         DS_PANIC("Expected equal found %s", show_token_kind(token.kind));
     }
     parser_advance(p);
@@ -364,7 +454,8 @@ void parse_assign(struct parser *p, struct instr_node *instr) {
 
 void parse_instr(struct parser *p, struct instr_node *instr);
 
-void parse_if(struct parser *p, struct instr_node *instr) {
+void parse_if(struct parser *p, struct instr_node *instr)
+{
     struct token token;
 
     instr->kind = INSTR_IF;
@@ -373,7 +464,8 @@ void parse_if(struct parser *p, struct instr_node *instr) {
     parse_rel(p, &instr->if_.rel);
 
     parser_current(p, &token);
-    if (token.kind != THEN) {
+    if (token.kind != THEN)
+    {
         DS_PANIC("Expected then found %s", show_token_kind(token.kind));
     }
     parser_advance(p);
@@ -382,14 +474,16 @@ void parse_if(struct parser *p, struct instr_node *instr) {
     parse_instr(p, instr->if_.instr);
 }
 
-void parse_goto(struct parser *p, struct instr_node *instr) {
+void parse_goto(struct parser *p, struct instr_node *instr)
+{
     struct token token;
 
     instr->kind = INSTR_GOTO;
     parser_advance(p);
 
     parser_current(p, &token);
-    if (token.kind != LABEL) {
+    if (token.kind != LABEL)
+    {
         DS_PANIC("Expected label found %s", show_token_kind(token.kind));
     }
     parser_advance(p);
@@ -397,7 +491,8 @@ void parse_goto(struct parser *p, struct instr_node *instr) {
     instr->goto_.label = token.value;
 }
 
-void parse_output(struct parser *p, struct instr_node *instr) {
+void parse_output(struct parser *p, struct instr_node *instr)
+{
     struct token token;
     struct term_node lhs;
 
@@ -409,7 +504,8 @@ void parse_output(struct parser *p, struct instr_node *instr) {
     instr->output.term = lhs;
 }
 
-void parse_label(struct parser *p, struct instr_node *instr) {
+void parse_label(struct parser *p, struct instr_node *instr)
+{
     struct token token;
 
     instr->kind = INSTR_LABEL;
@@ -420,31 +516,46 @@ void parse_label(struct parser *p, struct instr_node *instr) {
     parser_advance(p);
 }
 
-void parse_instr(struct parser *p, struct instr_node *instr) {
+void parse_instr(struct parser *p, struct instr_node *instr)
+{
     struct token token;
 
     parser_current(p, &token);
-    if (token.kind == IDENT) {
+    if (token.kind == IDENT)
+    {
         parse_assign(p, instr);
-    } else if (token.kind == IF) {
+    }
+    else if (token.kind == IF)
+    {
         parse_if(p, instr);
-    } else if (token.kind == GOTO) {
+    }
+    else if (token.kind == GOTO)
+    {
         parse_goto(p, instr);
-    } else if (token.kind == OUTPUT) {
+    }
+    else if (token.kind == OUTPUT)
+    {
         parse_output(p, instr);
-    } else if (token.kind == LABEL) {
+    }
+    else if (token.kind == LABEL)
+    {
         parse_label(p, instr);
-    } else {
+    }
+    else
+    {
         DS_PANIC("unexpected token %s", show_token_kind(token.kind));
     }
 }
 
-int find_variable(ds_dynamic_array *variables, char *ident) {
-    for (unsigned int i = 0; i < variables->count; i++) {
+int find_variable(ds_dynamic_array *variables, char *ident)
+{
+    for (unsigned int i = 0; i < variables->count; i++)
+    {
         char *variable = NULL;
         ds_dynamic_array_get(variables, i, &variable);
 
-        if (strcmp(ident, variable) == 0) {
+        if (strcmp(ident, variable) == 0)
+        {
             return i;
         }
     }
@@ -452,11 +563,13 @@ int find_variable(ds_dynamic_array *variables, char *ident) {
     return -1;
 }
 
-void parse_program(struct parser *p, struct program_node *program) {
+void parse_program(struct parser *p, struct program_node *program)
+{
     ds_dynamic_array_init(&program->instrs, sizeof(struct instr_node));
 
     struct token token;
-    do {
+    do
+    {
         struct instr_node instr;
 
         parse_instr(p, &instr);
@@ -467,9 +580,12 @@ void parse_program(struct parser *p, struct program_node *program) {
     } while (token.kind != END);
 }
 
-void term_asm(struct term_node *term, ds_dynamic_array *variables) {
-    switch (term->kind) {
-    case TERM_INPUT: {
+void term_asm(struct term_node *term, ds_dynamic_array *variables)
+{
+    switch (term->kind)
+    {
+    case TERM_INPUT:
+    {
         printf("    read 0, line, LINE_MAX\n");
         printf("    mov rdi, line\n");
         printf("    call strlen\n");
@@ -481,7 +597,8 @@ void term_asm(struct term_node *term, ds_dynamic_array *variables) {
     case TERM_INT:
         printf("    mov rax, %s\n", term->value);
         break;
-    case TERM_IDENT: {
+    case TERM_IDENT:
+    {
         int index = find_variable(variables, term->value);
         printf("    mov rax, qword [rbp - %d]\n", index * 8 + 8);
         break;
@@ -489,9 +606,12 @@ void term_asm(struct term_node *term, ds_dynamic_array *variables) {
     }
 }
 
-void expr_asm(struct expr_node *expr, ds_dynamic_array *variables) {
-    switch (expr->kind) {
-    case EXPR_TERM: {
+void expr_asm(struct expr_node *expr, ds_dynamic_array *variables)
+{
+    switch (expr->kind)
+    {
+    case EXPR_TERM:
+    {
         term_asm(&expr->term, variables);
         break;
     }
@@ -504,8 +624,10 @@ void expr_asm(struct expr_node *expr, ds_dynamic_array *variables) {
     }
 }
 
-void rel_asm(struct rel_node *rel, ds_dynamic_array *variables) {
-    switch (rel->kind) {
+void rel_asm(struct rel_node *rel, ds_dynamic_array *variables)
+{
+    switch (rel->kind)
+    {
     case REL_LESS_THAN:
         term_asm(&rel->less_than.lhs, variables);
         printf("    mov rdx, rax\n");
@@ -519,15 +641,19 @@ void rel_asm(struct rel_node *rel, ds_dynamic_array *variables) {
 }
 
 void instr_asm(struct instr_node *instr, ds_dynamic_array *variables,
-               int *if_count) {
-    switch (instr->kind) {
-    case INSTR_ASSIGN: {
+               int *if_count)
+{
+    switch (instr->kind)
+    {
+    case INSTR_ASSIGN:
+    {
         expr_asm(&instr->assign.expr, variables); // the result is in rax
         int index = find_variable(variables, instr->assign.ident);
         printf("    mov qword [rbp - %d], rax\n", index * 8 + 8);
         break;
     }
-    case INSTR_IF: {
+    case INSTR_IF:
+    {
         rel_asm(&instr->if_.rel, variables); // the result is in rax
         int label = (*if_count)++;
         printf("    test rax, rax\n");
@@ -536,11 +662,13 @@ void instr_asm(struct instr_node *instr, ds_dynamic_array *variables,
         printf(".endif%d:\n", label);
         break;
     }
-    case INSTR_GOTO: {
+    case INSTR_GOTO:
+    {
         printf("    jmp .%s\n", instr->goto_.label);
         break;
     }
-    case INSTR_OUTPUT: {
+    case INSTR_OUTPUT:
+    {
         term_asm(&instr->output.term, variables);
         printf("    mov rdi, 1\n");
         printf("    mov rsi, rax\n");
@@ -554,18 +682,22 @@ void instr_asm(struct instr_node *instr, ds_dynamic_array *variables,
 }
 
 void term_declare_variables(struct term_node *term,
-                            ds_dynamic_array *variables) {
-    switch (term->kind) {
+                            ds_dynamic_array *variables)
+{
+    switch (term->kind)
+    {
     case TERM_INPUT:
         break;
     case TERM_INT:
         break;
     case TERM_IDENT:
-        for (unsigned int i = 0; i < variables->count; i++) {
+        for (unsigned int i = 0; i < variables->count; i++)
+        {
             char *variable = NULL;
             ds_dynamic_array_get(variables, i, &variable);
 
-            if (strcmp(term->value, variable) == 0) {
+            if (strcmp(term->value, variable) == 0)
+            {
                 return;
             }
         }
@@ -575,9 +707,12 @@ void term_declare_variables(struct term_node *term,
 }
 
 void expr_declare_variables(struct expr_node *expr,
-                            ds_dynamic_array *variables) {
-    switch (expr->kind) {
-    case EXPR_TERM: {
+                            ds_dynamic_array *variables)
+{
+    switch (expr->kind)
+    {
+    case EXPR_TERM:
+    {
         term_declare_variables(&expr->term, variables);
         break;
     }
@@ -588,8 +723,10 @@ void expr_declare_variables(struct expr_node *expr,
     }
 }
 
-void rel_declare_variables(struct rel_node *rel, ds_dynamic_array *variables) {
-    switch (rel->kind) {
+void rel_declare_variables(struct rel_node *rel, ds_dynamic_array *variables)
+{
+    switch (rel->kind)
+    {
     case REL_LESS_THAN:
         term_declare_variables(&rel->less_than.lhs, variables);
         term_declare_variables(&rel->less_than.rhs, variables);
@@ -598,30 +735,38 @@ void rel_declare_variables(struct rel_node *rel, ds_dynamic_array *variables) {
 }
 
 void instr_declare_variables(struct instr_node *instr,
-                             ds_dynamic_array *variables) {
-    switch (instr->kind) {
-    case INSTR_ASSIGN: {
+                             ds_dynamic_array *variables)
+{
+    switch (instr->kind)
+    {
+    case INSTR_ASSIGN:
+    {
         expr_declare_variables(&instr->assign.expr, variables);
-        for (unsigned int i = 0; i < variables->count; i++) {
+        for (unsigned int i = 0; i < variables->count; i++)
+        {
             char *variable = NULL;
             ds_dynamic_array_get(variables, i, &variable);
 
-            if (strcmp(instr->assign.ident, variable) == 0) {
+            if (strcmp(instr->assign.ident, variable) == 0)
+            {
                 return;
             }
         }
         ds_dynamic_array_append(variables, &instr->assign.ident);
         break;
     }
-    case INSTR_IF: {
+    case INSTR_IF:
+    {
         rel_declare_variables(&instr->if_.rel, variables);
         instr_declare_variables(instr->if_.instr, variables);
         break;
     }
-    case INSTR_GOTO: {
+    case INSTR_GOTO:
+    {
         break;
     }
-    case INSTR_OUTPUT: {
+    case INSTR_OUTPUT:
+    {
         term_declare_variables(&instr->output.term, variables);
         break;
     }
@@ -630,12 +775,14 @@ void instr_declare_variables(struct instr_node *instr,
     }
 }
 
-void program_asm(struct program_node *program) {
+void program_asm(struct program_node *program)
+{
     int if_count = 0;
     ds_dynamic_array variables;
     ds_dynamic_array_init(&variables, sizeof(char *));
 
-    for (unsigned int i = 0; i < program->instrs.count; i++) {
+    for (unsigned int i = 0; i < program->instrs.count; i++)
+    {
         struct instr_node instr;
         ds_dynamic_array_get(&program->instrs, i, &instr);
 
@@ -653,7 +800,8 @@ void program_asm(struct program_node *program) {
     printf("    mov rbp, rsp\n");
     printf("    sub rsp, %d\n", variables.count * 8);
 
-    for (unsigned int i = 0; i < program->instrs.count; i++) {
+    for (unsigned int i = 0; i < program->instrs.count; i++)
+    {
         struct instr_node instr;
         ds_dynamic_array_get(&program->instrs, i, &instr);
 
@@ -670,7 +818,8 @@ void program_asm(struct program_node *program) {
     printf("line rb LINE_MAX\n");
 }
 
-int main() {
+int main()
+{
     char *buffer = NULL;
     int length = ds_io_read_file(NULL, &buffer);
 

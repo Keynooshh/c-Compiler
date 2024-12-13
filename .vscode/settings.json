@@ -1,8 +1,10 @@
 {
-    "files.associations": {
-        "*.copy": "cpp",
-        "string.h": "c",
-        "ctype.h": "c",
-        "stdio.h": "c"
-    }
+  "files.associations": {
+    "*.copy": "cpp",
+    "string.h": "c",
+    "ctype.h": "c",
+    "stdio.h": "c",
+    "parser.h": "c",
+    "type_traits": "c"
+  }
 }

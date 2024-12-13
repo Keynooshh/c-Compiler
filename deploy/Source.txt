@@ -1,0 +1,15 @@
+fib_seq = 4
+i = 0
+j = 1
+n = 0
+output 2
+output i
+output j
+output ,
+:loop
+k = i + j
+output k
+i = j
+j = k
+n = n + 1
+if n < fib_seq then goto :loop

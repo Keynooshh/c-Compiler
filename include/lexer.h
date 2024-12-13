@@ -1,4 +1,4 @@
-#ifndef LEXER_H  // Include guard to prevent multiple inclusions
+#ifndef LEXER_H // Include guard to prevent multiple inclusions
 #define LEXER_H
 
 #include <stdio.h>
@@ -10,7 +10,8 @@
 #include "ds.h"
 
 // Enum for different token kinds
-enum token_kind {
+enum token_kind
+{
     TK_INPUT,
     TK_OUTPUT,
     TK_IF,
@@ -21,19 +22,19 @@ enum token_kind {
     TK_INT,
     TK_EQUAL,
     TK_PLUS,
-    TK_MINUS, 
-    TK_MULTIPLY, 
+    TK_MINUS,
+    TK_MULTIPLY,
     TK_DIVIDE,
     TK_LTHAN,
     TK_GTHAN,
-    TK_LPAREN,
-    TK_RPAREN,
+    TK_COMMA,
     INVALID,
     END
 };
 
 // Token struct definition
-struct token {
+struct token
+{
     enum token_kind kind;
     char *value;
 };
@@ -43,7 +44,8 @@ const char *show_token_kind(enum token_kind kind);
 void print_token(struct token tok);
 
 // Lexer struct definition
-struct lexer {
+struct lexer
+{
     char *buffer;
     unsigned int buffer_len;
     unsigned int pos;

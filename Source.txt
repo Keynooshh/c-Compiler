@@ -1,7 +1,0 @@
-a = input
-i = 0
-:label
-o = 1
-output o 
-k = i + 1  
-if i < 2 then goto :label
