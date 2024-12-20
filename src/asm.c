@@ -25,6 +25,12 @@ void term_asm(struct term_node *term, ds_dynamic_array *variables)
     {
     case TERM_INPUT:
     {
+        printf("    mov rdi, 1\n");
+        printf("    mov rsi, input_label\n");
+        printf("    mov rdx, 15\n");
+        printf("    mov rax, 1\n");
+        printf("    syscall\n");
+
         printf("    read 0, line, LINE_MAX\n");
         printf("    mov rdi, line\n");
         printf("    call strlen\n");
@@ -80,14 +86,15 @@ void expr_asm(struct expr_node *expr, ds_dynamic_array *variables)
         printf("    add rax, rdx\n");
         break;
     }
-    case EXPR_MINUS: {
-    term_asm(&expr->min.lhs, variables);  
-    printf("    mov rbx, rax\n");         
-    term_asm(&expr->min.rhs, variables);  
-    printf("    sub rbx, rax\n");         
-    printf("    mov rax, rbx\n");         
-    break;
-    }   
+    case EXPR_MINUS:
+    {
+        term_asm(&expr->min.lhs, variables);
+        printf("    mov rbx, rax\n");
+        term_asm(&expr->min.rhs, variables);
+        printf("    sub rbx, rax\n");
+        printf("    mov rax, rbx\n");
+        break;
+    }
     case EXPR_MUL:
     {
         term_asm(&expr->mul.lhs, variables); // added mul
@@ -181,6 +188,7 @@ void instr_asm(struct instr_node *instr, ds_dynamic_array *variables,
         {
             break;
         }
+
         printf("    mov rdi, 1\n");
         printf("    mov rsi, rax\n");
         printf("    call write_uint\n");
@@ -314,13 +322,14 @@ void instr_declare_variables(struct instr_node *instr,
     }
 }
 
-// void program_asm(struct program_node *program)
+// void print_asm(struct program_node *program)
 // {
 //     ds_dynamic_array variables;
 
-//     ds_dynamic_array_init(&variables,sizeof(char *));
+//     ds_dynamic_array_init(&variables, sizeof(char *));
 
-//         for (unsigned int i = 0; i < program->instrs.count; i++) {
+//     for (unsigned int i = 0; i < program->instrs.count; i++)
+//     {
 //         struct instr_node instr;
 //         ds_dynamic_array_get(&program->instrs, i, &instr);
 
@@ -370,6 +379,11 @@ void program_asm(struct program_node *program)
         instr_asm(&instr, &variables, &if_count);
     }
     printf("    add rsp, %d\n", variables.count * 8);
+    printf("    mov rdi, 1\n");
+    printf("    mov rsi, newline_label\n");
+    printf("    mov rdx, 1\n");
+    printf("    mov rax, 1\n");
+    printf("    syscall\n");
 
     printf("    mov rax, 60\n");
     printf("    xor rdi, rdi\n");
@@ -377,5 +391,7 @@ void program_asm(struct program_node *program)
 
     printf("segment readable writeable\n");
     printf("line rb LINE_MAX\n");
-    printf("comma db ','\n"); // Define a comma character
+    printf("comma db ',',0\n");
+    printf("newline_label: db 0x0A ,0\n");
+    printf("input_label: db \"Input: \",0\n");
 }
