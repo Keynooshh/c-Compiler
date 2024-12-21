@@ -1,9 +1,9 @@
 fib_seq = input  
 
-last = fib_seq -1
+last = fib_seq -2
 i = 0
 j = 1
-n = 0 
+n = 0
 
 if n < 1 then goto :start
 :comma

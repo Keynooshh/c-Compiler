@@ -21,7 +21,7 @@ _start:
     mov qword [rbp - 8], rax
     mov rax, qword [rbp - 8]
     mov rbx, rax
-    mov rax, 1
+    mov rax, 2
     sub rbx, rax
     mov rax, rbx
     mov qword [rbp - 16], rax
