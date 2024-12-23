@@ -5,6 +5,21 @@ compiler="${deploy_dir}/compiler"
 asm_file="application.asm" 
 bin_asm_file="compiled_app"
 
+
+if ! command -v gcc &> /dev/null; then
+    	echo "Error: GCC is not installed or not in $PATH."
+    	echo "Please install GCC to compile the source files."
+    	exit 1
+fi
+
+if ! command -v fasm &> /dev/null; then
+	echo "Error: FASM is not installed or not in $PATH."
+	echo "Please install Flat Assembler (FASM) to assemble the output."
+	exit 1
+fi
+
+
+
 echo "=============================================\n"
 gcc -I ./include -o "$compiler" src/*
 EC=$?
