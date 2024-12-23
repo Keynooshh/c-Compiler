@@ -362,8 +362,8 @@ void program_asm(struct program_node *program)
     printf("format ELF64 executable\n");
     printf("LINE_MAX equ 1024\n");
     printf("segment readable executable\n");
-    printf("include \"./include/linux.inc\"\n");
-    printf("include \"./include/utils.inc\"\n");
+    printf("include \"../include/linux.inc\"\n");
+    printf("include \"../include/utils.inc\"\n");
     printf("entry _start\n");
     printf("_start:\n");
 

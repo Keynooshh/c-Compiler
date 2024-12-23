@@ -1,8 +1,8 @@
 format ELF64 executable
 LINE_MAX equ 1024
 segment readable executable
-include "./include/linux.inc"
-include "./include/utils.inc"
+include "../include/linux.inc"
+include "../include/utils.inc"
 entry _start
 _start:
     mov rbp, rsp

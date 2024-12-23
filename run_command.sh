@@ -1,9 +1,9 @@
-deploy_dir="./deploy"
-source_directory="${deploy_dir}/source_files"
+deploy_dir="./build"
+source_directory="${deploy_dir}/sources"
 source_file=$(find "$source_directory" -type f )
-compiler="${deploy_dir}/compiler_program"
-asm_file="asm_compiled.asm" 
-bin_asm_file="compiled_application"
+compiler="${deploy_dir}/compiler"
+asm_file="application.asm" 
+bin_asm_file="compiled_app"
 
 echo "=============================================\n"
 gcc -I ./include -o "$compiler" src/*
@@ -34,7 +34,7 @@ echo "\n---------------------------------------------\n"
 
 echo "Using Flat Assmebler (Fasm) V$(fasm | awk '{print $4;exit;}'):"
 cd "$deploy_dir"
-fasm "$asm_file" "$bin_asm_file"
+fasm "$asm_file" "$bin_asm_file" > /dev/null
 EC=$?
 
 if [ $EC -eq 0 ];then
@@ -44,6 +44,6 @@ else
 	exit 1
 fi
 
-echo "\n File has been created -> $bin_asm_file"
+echo "\n  File has been created -> ${deploy_dir}/${bin_asm_file}"
 
 echo "\n============================================="
